@@ -2,7 +2,7 @@
 # Global
 # ========================
 .env*
-!.env.example
+!.env.sample
 *.log
 .DS_Store
 
