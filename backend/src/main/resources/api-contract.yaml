@@ -1,0 +1,1987 @@
+openapi: 3.1.0
+info:
+  title: Budget Management API
+  description: API RESTful pour l'application de gestion de budget personnel
+  version: 1.0.0
+  contact:
+    name: Romaric Yi
+    url: https://github.com/Yiroma
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Serveur de développement
+
+tags:
+  - name: Auth
+    description: Authentification (inscription, connexion, déconnexion)
+  - name: Users
+    description: Gestion du profil utilisateur
+  - name: Subscriptions
+    description: Abonnements disponibles
+  - name: Groups
+    description: Gestion des groupes
+  - name: Members
+    description: Gestion des membres d'un groupe
+  - name: Accounts
+    description: Gestion des comptes bancaires
+  - name: Budgets
+    description: Gestion des budgets mensuels
+  - name: Operations
+    description: Gestion des opérations (revenus et dépenses)
+  - name: Categories
+    description: Catégories d'opérations
+
+paths:
+  # ===========================================================================
+  # Auth
+  # ===========================================================================
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Inscription
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email déjà utilisé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Connexion
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "401":
+          description: Identifiants incorrects
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Déconnexion
+      operationId: logout
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Déconnexion réussie
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Users
+  # ===========================================================================
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Profil de l'utilisateur connecté
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profil utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Users]
+      summary: Modifier son profil
+      operationId: updateMyProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+      responses:
+        "200":
+          description: Profil mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Users]
+      summary: Supprimer son compte
+      operationId: deleteMyAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Compte supprimé
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/me/subscription:
+    put:
+      tags: [Users]
+      summary: Changer d'abonnement
+      operationId: updateMySubscription
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriptionUpdateRequest"
+      responses:
+        "200":
+          description: Abonnement mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Subscriptions
+  # ===========================================================================
+
+  /subscriptions:
+    get:
+      tags: [Subscriptions]
+      summary: Liste des abonnements disponibles
+      operationId: listSubscriptions
+      responses:
+        "200":
+          description: Liste des abonnements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriptionResponse"
+
+  # ===========================================================================
+  # Groups
+  # ===========================================================================
+
+  /groups:
+    post:
+      tags: [Groups]
+      summary: Créer un groupe
+      operationId: createGroup
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupRequest"
+      responses:
+        "201":
+          description: Groupe créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Limite d'abonnement atteinte
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags: [Groups]
+      summary: Liste des groupes de l'utilisateur
+      operationId: listMyGroups
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Liste des groupes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GroupResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groups/{groupId}:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+
+    get:
+      tags: [Groups]
+      summary: Détail d'un groupe
+      operationId: getGroup
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Détail du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Groupe inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Groups]
+      summary: Modifier un groupe
+      operationId: updateGroup
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupRequest"
+      responses:
+        "200":
+          description: Groupe mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non owner du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Groupe inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Groups]
+      summary: Supprimer un groupe
+      operationId: deleteGroup
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Groupe supprimé
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non owner du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Groupe inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groups/join:
+    post:
+      tags: [Groups]
+      summary: Rejoindre un groupe via code d'invitation
+      operationId: joinGroup
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JoinGroupRequest"
+      responses:
+        "200":
+          description: Groupe rejoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "400":
+          description: Code d'invitation invalide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Déjà membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Limite de membres atteinte (abonnement)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Members
+  # ===========================================================================
+
+  /groups/{groupId}/members:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+
+    get:
+      tags: [Members]
+      summary: Liste des membres d'un groupe
+      operationId: listGroupMembers
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Liste des membres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MemberResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groups/{groupId}/members/invite:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+
+    post:
+      tags: [Members]
+      summary: Inviter un membre par email
+      operationId: inviteMember
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteMemberRequest"
+      responses:
+        "201":
+          description: Invitation envoyée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non owner du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Utilisateur déjà membre
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Limite de membres atteinte (abonnement)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groups/{groupId}/members/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+      - $ref: "#/components/parameters/userId"
+
+    put:
+      tags: [Members]
+      summary: Modifier le rôle ou le taux de contribution d'un membre
+      operationId: updateMember
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberUpdateRequest"
+      responses:
+        "200":
+          description: Membre mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non owner du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Membre inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Members]
+      summary: Retirer un membre du groupe
+      operationId: removeMember
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Membre retiré
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non owner du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Membre inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Accounts
+  # ===========================================================================
+
+  /groups/{groupId}/accounts:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+
+    post:
+      tags: [Accounts]
+      summary: Créer un compte bancaire
+      operationId: createAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+      responses:
+        "201":
+          description: Compte créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Limite de comptes atteinte (abonnement)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags: [Accounts]
+      summary: Liste des comptes d'un groupe
+      operationId: listGroupAccounts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Liste des comptes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /accounts/{accountId}:
+    parameters:
+      - $ref: "#/components/parameters/accountId"
+
+    get:
+      tags: [Accounts]
+      summary: Détail d'un compte
+      operationId: getAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Détail du compte
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Compte inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Accounts]
+      summary: Modifier un compte
+      operationId: updateAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+      responses:
+        "200":
+          description: Compte mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Compte inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Accounts]
+      summary: Supprimer un compte
+      operationId: deleteAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Compte supprimé
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Compte inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Monthly Budgets
+  # ===========================================================================
+
+  /groups/{groupId}/budgets:
+    parameters:
+      - $ref: "#/components/parameters/groupId"
+
+    post:
+      tags: [Budgets]
+      summary: Créer un budget mensuel
+      operationId: createBudget
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+      responses:
+        "201":
+          description: Budget créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Budget déjà existant pour ce mois/année
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags: [Budgets]
+      summary: Liste des budgets d'un groupe
+      operationId: listGroupBudgets
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: year
+          in: query
+          schema:
+            type: integer
+          description: Filtrer par année
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: "year,desc"
+      responses:
+        "200":
+          description: Liste paginée des budgets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageBudgetResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /budgets/{budgetId}:
+    parameters:
+      - $ref: "#/components/parameters/budgetId"
+
+    get:
+      tags: [Budgets]
+      summary: Détail d'un budget
+      operationId: getBudget
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Détail du budget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Budget inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Budgets]
+      summary: Modifier un budget
+      operationId: updateBudget
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+      responses:
+        "200":
+          description: Budget mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Budget inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Budgets]
+      summary: Supprimer un budget
+      operationId: deleteBudget
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Budget supprimé
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Budget inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /budgets/{budgetId}/balance:
+    parameters:
+      - $ref: "#/components/parameters/budgetId"
+
+    get:
+      tags: [Budgets]
+      summary: Calculer le solde restant d'un budget
+      operationId: getBudgetBalance
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Solde du budget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Budget inexistant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Operations
+  # ===========================================================================
+
+  /budgets/{budgetId}/operations:
+    parameters:
+      - $ref: "#/components/parameters/budgetId"
+
+    post:
+      tags: [Operations]
+      summary: Créer une opération
+      operationId: createOperation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OperationRequest"
+      responses:
+        "201":
+          description: Opération créée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags: [Operations]
+      summary: Liste des opérations d'un budget
+      operationId: listBudgetOperations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [income, expense]
+          description: Filtrer par type
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, completed]
+          description: Filtrer par statut
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+          description: Filtrer par catégorie
+        - name: accountId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filtrer par compte
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: "dueDay,asc"
+      responses:
+        "200":
+          description: Liste paginée des opérations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageOperationResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /budgets/{budgetId}/operations/generate-recurring:
+    parameters:
+      - $ref: "#/components/parameters/budgetId"
+
+    post:
+      tags: [Operations]
+      summary: Générer les opérations récurrentes pour ce budget
+      operationId: generateRecurringOperations
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Opérations récurrentes générées
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OperationResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /operations/{operationId}:
+    parameters:
+      - $ref: "#/components/parameters/operationId"
+
+    get:
+      tags: [Operations]
+      summary: Détail d'une opération
+      operationId: getOperation
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Détail de l'opération
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Opération inexistante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Operations]
+      summary: Modifier une opération
+      operationId: updateOperation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OperationRequest"
+      responses:
+        "200":
+          description: Opération mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Opération inexistante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Operations]
+      summary: Supprimer une opération
+      operationId: deleteOperation
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Opération supprimée
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Non membre du groupe associé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Opération inexistante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ===========================================================================
+  # Categories
+  # ===========================================================================
+
+  /categories:
+    get:
+      tags: [Categories]
+      summary: Liste des catégories
+      operationId: listCategories
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Liste des catégories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      tags: [Categories]
+      summary: Créer une catégorie
+      operationId: createCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+      responses:
+        "201":
+          description: Catégorie créée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /categories/{categoryId}:
+    parameters:
+      - $ref: "#/components/parameters/categoryId"
+
+    put:
+      tags: [Categories]
+      summary: Modifier une catégorie
+      operationId: updateCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+      responses:
+        "200":
+          description: Catégorie mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Catégorie inexistante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Categories]
+      summary: Supprimer une catégorie
+      operationId: deleteCategory
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Catégorie supprimée
+        "401":
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Catégorie inexistante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+# =============================================================================
+# Components
+# =============================================================================
+
+components:
+  # ---------------------------------------------------------------------------
+  # Security
+  # ---------------------------------------------------------------------------
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # ---------------------------------------------------------------------------
+  # Parameters
+  # ---------------------------------------------------------------------------
+
+  parameters:
+    groupId:
+      name: groupId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    accountId:
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    budgetId:
+      name: budgetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    operationId:
+      name: operationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    categoryId:
+      name: categoryId
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  # ---------------------------------------------------------------------------
+  # Schemas
+  # ---------------------------------------------------------------------------
+
+  schemas:
+    # --- Auth ---
+
+    RegisterRequest:
+      type: object
+      required: [email, password, name, subscriptionId]
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          examples: ["user@example.com"]
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 255
+          examples: ["SecureP@ss123"]
+        name:
+          type: string
+          maxLength: 100
+          examples: ["Jean Dupont"]
+        subscriptionId:
+          type: integer
+          examples: [1]
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          examples: ["user@example.com"]
+        password:
+          type: string
+          format: password
+          examples: ["SecureP@ss123"]
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          examples: ["eyJhbGciOiJIUzI1NiIs..."]
+        tokenType:
+          type: string
+          examples: ["Bearer"]
+
+    # --- Users ---
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        subscription:
+          $ref: "#/components/schemas/SubscriptionResponse"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 255
+
+    SubscriptionUpdateRequest:
+      type: object
+      required: [subscriptionId]
+      properties:
+        subscriptionId:
+          type: integer
+          examples: [2]
+
+    # --- Subscriptions ---
+
+    SubscriptionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          examples: ["Premium"]
+        price:
+          type: integer
+          description: Prix en centimes
+          examples: [999]
+        maxUsers:
+          type: integer
+          examples: [5]
+        maxAccounts:
+          type: integer
+          examples: [10]
+
+    # --- Groups ---
+
+    GroupRequest:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          examples: ["Budget Famille"]
+        type:
+          type: string
+          enum: [solo, duo, multi]
+          examples: ["duo"]
+
+    GroupResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        inviteCode:
+          type: string
+        type:
+          type: string
+          enum: [solo, duo, multi]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    JoinGroupRequest:
+      type: object
+      required: [inviteCode]
+      properties:
+        inviteCode:
+          type: string
+          maxLength: 50
+          examples: ["ABC123XYZ"]
+
+    # --- Members ---
+
+    MemberResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [owner, member]
+        contributionRate:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          description: Taux de contribution en pourcentage
+          examples: [50.00]
+
+    MemberUpdateRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [owner, member]
+        contributionRate:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 100
+          examples: [60.00]
+
+    InviteMemberRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          examples: ["invite@example.com"]
+
+    # --- Accounts ---
+
+    AccountRequest:
+      type: object
+      required: [label, type]
+      properties:
+        label:
+          type: string
+          maxLength: 100
+          examples: ["Compte courant"]
+        type:
+          type: string
+          enum: [personal, joint]
+          examples: ["personal"]
+        initialBalance:
+          type: integer
+          description: Solde initial en centimes
+          default: 0
+          examples: [150000]
+
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        type:
+          type: string
+          enum: [personal, joint]
+        initialBalance:
+          type: integer
+          description: Solde initial en centimes
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # --- Monthly Budgets ---
+
+    BudgetRequest:
+      type: object
+      required: [month, year]
+      properties:
+        month:
+          type: integer
+          minimum: 1
+          maximum: 12
+          examples: [6]
+        year:
+          type: integer
+          minimum: 2000
+          maximum: 2100
+          examples: [2026]
+
+    BudgetResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        month:
+          type: integer
+        year:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BalanceResponse:
+      type: object
+      properties:
+        budgetId:
+          type: string
+          format: uuid
+        totalIncome:
+          type: integer
+          description: Total des revenus en centimes
+          examples: [300000]
+        totalExpense:
+          type: integer
+          description: Total des dépenses en centimes
+          examples: [185000]
+        remaining:
+          type: integer
+          description: Solde restant en centimes (revenus - dépenses)
+          examples: [115000]
+
+    PageBudgetResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetResponse"
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    # --- Operations ---
+
+    OperationRequest:
+      type: object
+      required: [label, amount, type, dueDay, accountId]
+      properties:
+        label:
+          type: string
+          maxLength: 255
+          examples: ["Loyer"]
+        amount:
+          type: integer
+          description: Montant en centimes
+          minimum: 1
+          examples: [85000]
+        type:
+          type: string
+          enum: [income, expense]
+          examples: ["expense"]
+        dueDay:
+          type: integer
+          minimum: 1
+          maximum: 31
+          description: Jour du mois prévu
+          examples: [5]
+        status:
+          type: string
+          enum: [pending, completed]
+          default: "pending"
+          examples: ["pending"]
+        categoryId:
+          type: integer
+          examples: [3]
+        accountId:
+          type: string
+          format: uuid
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleRequest"
+
+    OperationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        amount:
+          type: integer
+          description: Montant en centimes
+        type:
+          type: string
+          enum: [income, expense]
+        dueDay:
+          type: integer
+        status:
+          type: string
+          enum: [pending, completed]
+        category:
+          $ref: "#/components/schemas/CategoryResponse"
+        accountId:
+          type: string
+          format: uuid
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleResponse"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PageOperationResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/OperationResponse"
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    # --- Recurrence Rules ---
+
+    RecurrenceRuleRequest:
+      type: object
+      required: [frequencyType, frequencyInterval, dateStart]
+      properties:
+        frequencyType:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+          examples: ["monthly"]
+        frequencyInterval:
+          type: integer
+          minimum: 1
+          description: Intervalle de récurrence (ex. 1 = chaque mois, 2 = tous les 2 mois)
+          default: 1
+          examples: [1]
+        dateStart:
+          type: string
+          format: date
+          examples: ["2026-01-01"]
+        dateEnd:
+          type: string
+          format: date
+          examples: ["2026-12-31"]
+
+    RecurrenceRuleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        frequencyType:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+        frequencyInterval:
+          type: integer
+        dateStart:
+          type: string
+          format: date
+        dateEnd:
+          type: string
+          format: date
+
+    # --- Categories ---
+
+    CategoryRequest:
+      type: object
+      required: [label]
+      properties:
+        label:
+          type: string
+          maxLength: 50
+          examples: ["Alimentation"]
+        icon:
+          type: string
+          maxLength: 100
+          examples: ["shopping-cart"]
+
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+        icon:
+          type: string
+
+    # --- Errors ---
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          examples: [400]
+        message:
+          type: string
+          examples: ["Erreurs de validation"]
+        errors:
+          type: array
+          items:
+            type: string
+          examples: [["Le nom est obligatoire", "Le montant doit être positif"]]
+        timestamp:
+          type: string
+          format: date-time
