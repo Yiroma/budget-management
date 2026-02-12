@@ -1,7 +1,7 @@
-name: "\U0001F41B Fix"
-description: Correction de bug (inclut les bugs visuels : overflow, alignement cassé)
-title: "[fix] "
-labels: ["fix"]
+name: "\U0001F6A8 Hotfix"
+description: Correction urgente en production
+title: "[hotfix] "
+labels: ["hotfix"]
 body:
   - type: textarea
     id: description

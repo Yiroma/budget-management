@@ -2,18 +2,22 @@
 
 ## Nommage des branches
 
-Format : `<type>/<description-courte>`
+Format : `<issue-number>-<type>-<description-courte>`
 
-| Préfixe     | Usage                                                                   | Exemple                     |
-| ----------- | ----------------------------------------------------------------------- | --------------------------- |
-| `feat/`     | Nouvelle fonctionnalité                                                 | `feat/add-budget-form`      |
-| `fix/`      | Correction de bug                                                       | `fix/login-redirect`        |
-| `chore/`    | Maintenance, config, dépendances                                        | `chore/update-dependencies` |
-| `refactor/` | Refactoring sans changement fonctionnel                                 | `refactor/budget-service`   |
-| `docs/`     | Documentation uniquement                                                | `docs/api-endpoints`        |
-| `test/`     | Ajout ou modification de tests                                          | `test/user-service`         |
-| `hotfix/`   | Correction urgente en production                                        | `hotfix/critical-auth-bug`  |
-| `style/`    | Formatage du code source, lint (aucun changement fonctionnel ni visuel) | `style/eslint-fixes`        |
+> Les branches sont créées depuis une issue GitHub. Le numéro d'issue est automatiquement préfixé par GitHub.
+
+| Préfixe     | Usage                                                                    | Exemple                        |
+| ----------- | ------------------------------------------------------------------------ | ------------------------------ |
+| `feat-`     | Nouvelle fonctionnalité (inclut le design/styling UI)                    | `12-feat-add-budget-form`      |
+| `fix-`      | Correction de bug (inclut les bugs visuels : overflow, alignement cassé) | `23-fix-login-redirect`        |
+| `chore-`    | Maintenance (dépendances, config)                                        | `55-chore-update-dependencies` |
+| `docs-`     | Documentation uniquement                                                 | `56-docs-api-endpoints`        |
+| `test-`     | Ajout ou modification de tests                                           | `34-test-user-service`         |
+| `refactor-` | Refactoring sans changement fonctionnel ni visuel                        | `40-refactor-budget-service`   |
+| `style-`    | Formatage du code source, lint (aucun changement fonctionnel ni visuel)  | `41-style-eslint-fixes`        |
+| `perf-`     | Amélioration de performance                                              | `42-perf-optimize-queries`     |
+| `ci-cd-`    | Pipeline d'intégration et déploiement continu                            | `43-ci-cd-add-deploy-pipeline` |
+| `hotfix-`   | Correction urgente en production                                         | `99-hotfix-critical-auth-bug`  |
 
 ### Règles
 

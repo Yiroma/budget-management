@@ -1,5 +1,5 @@
 name: "\U0001F680 Feature"
-description: Nouvelle fonctionnalité à développer
+description: Nouvelle fonctionnalité à développer (inclus le design/styling UI)
 title: "[feat] "
 labels: ["feat"]
 body:
