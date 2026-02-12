@@ -1,0 +1,12 @@
+name: "\U0001F9EA Test"
+description: Ajout ou modification de tests
+title: "[test] "
+labels: ["test"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris les tests à ajouter ou modifier
+    validations:
+      required: false

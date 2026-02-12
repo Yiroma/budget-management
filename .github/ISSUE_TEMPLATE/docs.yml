@@ -1,0 +1,12 @@
+name: "\U0001F4DD Docs"
+description: Documentation du projet
+title: "[docs] "
+labels: ["docs"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris la documentation à rédiger ou modifier
+    validations:
+      required: false

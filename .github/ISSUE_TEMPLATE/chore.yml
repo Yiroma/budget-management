@@ -1,0 +1,12 @@
+name: "\U0001F527 Chore"
+description: Tâche technique ou maintenance
+title: "[chore] "
+labels: ["chore"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris la tâche à réaliser
+    validations:
+      required: false
