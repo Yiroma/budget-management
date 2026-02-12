@@ -1,0 +1,12 @@
+name: "\u2699\uFE0F CI/CD"
+description: Pipeline d'intégration et déploiement continu
+title: "[ci-cd] "
+labels: ["ci/cd"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris la tâche CI/CD à réaliser
+    validations:
+      required: false

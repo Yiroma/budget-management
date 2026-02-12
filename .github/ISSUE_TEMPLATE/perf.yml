@@ -1,0 +1,12 @@
+name: "\u26A1 Perf"
+description: Amélioration des performances
+title: "[perf] "
+labels: ["perf"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris l'amélioration de performance à apporter
+    validations:
+      required: false

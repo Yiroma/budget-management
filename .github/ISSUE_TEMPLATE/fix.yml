@@ -1,0 +1,19 @@
+name: "\U0001F41B Fix"
+description: Corriger un bug
+title: "[fix] "
+labels: ["fix"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris le problème rencontré et comment le reproduire
+      placeholder: |
+        Description du bug...
+
+        Étapes pour reproduire :
+        1. Aller sur ...
+        2. Cliquer sur ...
+        3. Observer ...
+    validations:
+      required: false
