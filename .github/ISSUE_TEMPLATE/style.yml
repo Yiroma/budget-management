@@ -1,0 +1,12 @@
+name: "\U0001F3A8 Style"
+description: Style, formatage ou UI
+title: "[style] "
+labels: ["style"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris les changements de style à apporter
+    validations:
+      required: false

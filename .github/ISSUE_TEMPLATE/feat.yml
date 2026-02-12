@@ -1,0 +1,16 @@
+name: "\U0001F680 Feature"
+description: Nouvelle fonctionnalité à développer
+title: "[feat] "
+labels: ["feat"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris la fonctionnalité à développer
+      placeholder: |
+        En tant que [rôle],
+        je veux [action],
+        afin de [bénéfice].
+    validations:
+      required: false

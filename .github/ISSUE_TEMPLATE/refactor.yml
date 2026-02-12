@@ -1,0 +1,12 @@
+name: "\u267B\uFE0F Refactor"
+description: Refactorisation du code
+title: "[refactor] "
+labels: ["refactor"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris le refactoring à réaliser
+    validations:
+      required: false
