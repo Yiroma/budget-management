@@ -133,3 +133,7 @@ Les conventions complètes se trouvent dans `docs/conventions/` :
 8. `08-quality.md` — Accessibilité, sécurité, SOLID/DRY/KISS/YAGNI
 
 Diagrammes UML dans `docs/diagrams/` (MCD, MLD, MPD, use-case).
+
+## Maintenance de la documentation
+
+Ne pas mettre à jour les README/docs automatiquement à chaque changement. Signaler à l'utilisateur quand une mise à jour de la documentation semble nécessaire (nouvelle feature majeure, changement d'architecture, modification de l'API ou de la structure du projet).
