@@ -99,58 +99,17 @@ Le projet est conçu avec une double intention :
 
 ```
 budget-management/
-├── .github/
-│   ├── PULL_REQUEST_TEMPLATE.md
-│   └── ISSUE_TEMPLATE/
-│       ├── config.yml
-│       ├── bug.yml
-│       └── feature.yml
-│
+├── .github/                # Templates PR et issues
 ├── docs/
-│   ├── conventions/
-│   │   ├── README.md
-│   │   ├── 01-git.md
-│   │   ├── 02-code-style.md
-│   │   ├── 03-frontend.md
-│   │   ├── 04-backend.md
-│   │   ├── 05-api.md
-│   │   ├── 06-database.md
-│   │   ├── 07-testing.md
-│   │   └── 08-quality.md
-│   ├── use-case.webp
-│   ├── mcd.webp
-│   ├── mld.webp
-│   └── mpd.webp
-│
-├── backend/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   ├── mvnw / mvnw.cmd
+│   ├── conventions/        # 8 guides de conventions (git, code, frontend, backend, api, bdd, tests, qualité)
+│   └── diagrams/           # Diagrammes UML (use-case, MCD, MLD, MPD)
+├── backend/                # Spring Boot 4, Java 21, Maven
 │   └── src/
-│       ├── main/
-│       │   ├── java/yiroma/budgetmanagement/
-│       │   │   └── BudgetmanagementApplication.java
-│       │   └── resources/
-│       │       └── application.properties
-│       └── test/
-│           └── java/yiroma/budgetmanagement/
-│               └── BudgetmanagementApplicationTests.java
-│
-├── frontend/
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── next.config.ts
-│   ├── tsconfig.json
-│   ├── eslint.config.mjs
-│   ├── postcss.config.mjs
+├── frontend/               # Next.js 16, React 19, TypeScript 5, Tailwind CSS 4
 │   └── src/
-│       └── app/
-│           ├── layout.tsx
-│           ├── page.tsx
-│           └── globals.css
-│
 ├── .env.sample
 ├── .gitignore
+├── CLAUDE.md
 ├── docker-compose.yml
 ├── Makefile
 └── README.md
@@ -182,19 +141,19 @@ Controller → Service → Repository → Database
 
 ### Diagramme de cas d'utilisation
 
-![Diagramme de cas d'utilisation](docs/use-case.webp)
+![Diagramme de cas d'utilisation](docs/diagrams/use-case.webp)
 
 ### Modèle Conceptuel de Données (MCD)
 
-![MCD](docs/mcd.webp)
+![MCD](docs/diagrams/mcd.webp)
 
 ### Modèle Logique de Données (MLD)
 
-![MLD](docs/mld.webp)
+![MLD](docs/diagrams/mld.webp)
 
 ### Modèle Physique de Données (MPD)
 
-![MPD](docs/mpd.webp)
+![MPD](docs/diagrams/mpd.webp)
 
 ---
 
@@ -272,15 +231,15 @@ Le projet utilise les [Conventional Commits](https://www.conventionalcommits.org
 <type>(<scope>): <description>
 ```
 
-Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `style`, `perf`, `ci`, `build`
+Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `style`, `perf`, `ci-cd`, `build`
 
 ### Branches
 
 ```
-<type>/<description-courte>
+<type>-<description-courte>
 ```
 
-Exemples : `feat/auth-login`, `fix/budget-calculation`, `chore/update-deps`
+Exemples : `feat-auth-login`, `fix-budget-calculation`, `chore-update-deps`
 
 ---
 
