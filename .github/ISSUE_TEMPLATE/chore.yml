@@ -1,5 +1,5 @@
 name: "\U0001F527 Chore"
-description: Tâche technique ou maintenance
+description: Maintenance (dépendances, config)
 title: "[chore] "
 labels: ["chore"]
 body:

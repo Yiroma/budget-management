@@ -1,5 +1,5 @@
 name: "\U0001F3A8 Style"
-description: Style, formatage ou UI
+description: Formatage du code source, lint (aucun changement fonctionnel ni visuel)
 title: "[style] "
 labels: ["style"]
 body:
