@@ -100,11 +100,11 @@ Le projet est conçu avec une double intention :
 ```
 budget-management/
 ├── .github/                # Templates PR et issues
+├── backend/                # Spring Boot 4, Java 21, Maven
+│   └── src/
 ├── docs/
 │   ├── conventions/        # 8 guides de conventions (git, code, frontend, backend, api, bdd, tests, qualité)
 │   └── diagrams/           # Diagrammes UML (use-case, MCD, MLD, MPD)
-├── backend/                # Spring Boot 4, Java 21, Maven
-│   └── src/
 ├── frontend/               # Next.js 16, React 19, TypeScript 5, Tailwind CSS 4
 │   └── src/
 ├── .env.sample
@@ -245,10 +245,10 @@ Exemples : `feat-auth-login`, `fix-budget-calculation`, `chore-update-deps`
 
 ## Auteur
 
-**Romaric Yi**
-
-- Portfolio : [yiromaric.fr](https://yiromaric.fr)
-- GitHub : [@Yiroma](https://github.com/Yiroma)
-- LinkedIn : [Romaric Yi](https://linkedin.com/in/yiromaric)
+> **Romaric Yi**
+>
+> - Portfolio : [yiromaric.fr](https://yiromaric.fr)
+> - GitHub : [@Yiroma](https://github.com/Yiroma)
+> - LinkedIn : [Romaric Yi](https://linkedin.com/in/yiromaric)
 
 ---
