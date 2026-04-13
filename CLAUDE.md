@@ -2,6 +2,38 @@
 
 Application full-stack de gestion de budget personnel et partagé.
 
+## Concept
+
+L'utilisateur saisit manuellement ses revenus et charges récurrentes pour visualiser, dès le 1er du mois, son **argent de poche restant** après déduction de toutes ses dépenses.
+
+Pour les utilisateurs en budget partagé, l'application calcule également **la part que chaque membre doit virer sur le compte commun**.
+
+Il n'y a aucune connexion avec de vrais comptes bancaires — toutes les valeurs sont saisies manuellement.
+
+### Abonnements
+
+| Plan | Comptes | Budgets | Membres/budget | Pub |
+|------|---------|---------|----------------|-----|
+| **Free** | 1 | 1 | 2 | Oui |
+| **Premium** | Illimité | Illimité | Illimité | Non |
+
+### Entités métier
+
+- **Account** : compte bancaire virtuel appartenant à un utilisateur (ex : compte courant, livret)
+- **Budget** : enveloppe de dépenses, solo ou partagée entre plusieurs utilisateurs (remplace l'ancien concept de "groupe")
+  - *Solo* : dépenses ponctuelles personnelles (ex : "Loisirs perso", "Voiture")
+  - *Partagé* : dépenses communes avec d'autres membres (ex : "Dépenses couple", "Coloc")
+- **Operation** : mouvement financier (revenu ou dépense) attaché à un compte ou un budget
+- **Recurrence rule** : règle de répétition automatique d'une opération (mensuel, tous les X mois…)
+- **Monthly budget** : instantiation mensuelle d'un budget pour un mois/année donné
+
+### Calcul argent de poche
+
+```
+Argent de poche = Revenus - Charges récurrentes (compte) - Part budget partagé
+Part budget partagé = Total opérations budget ÷ nombre de membres (pondéré par contribution_rate)
+```
+
 ## Stack technique
 
 | Couche   | Technologie                                                               |
@@ -40,6 +72,8 @@ Controller → Service → Repository → Database
 - **Mapper** : conversion manuelle Entity <-> DTO
 
 Package : `yiroma.budgetmanagement.{config,controller,service,repository,model,dto,mapper,exception,enums}`
+
+> Le terme "groupe" n'existe plus dans le code. Utiliser `budget` (entité Budget, BudgetService, etc.).
 
 ### Frontend (hybride feature-based)
 
@@ -110,14 +144,14 @@ Ordre : Node.js natifs → Externes → Internes (`@/`) → Types → Styles (s�
 
 - Tables : snake_case, singulier, en anglais
 - Colonnes : snake_case, FK préfixées du nom de la table référencée
-- **UUID** pour entités métier (user, operation, account, group, monthly_budget)
+- **UUID** pour entités métier (user, operation, account, budget, monthly_budget)
 - **SERIAL** pour tables de référence (subscription, category, recurrence_rule)
 - Montants : `DECIMAL(12, 2)` en PostgreSQL, `BigDecimal` en Java
 - Timestamps : `created_at` et `updated_at` sur chaque table
 - Relations JPA : toujours `FetchType.LAZY`
 - Migrations : Flyway, format `V<n>__<description_snake_case>.sql`
 
-> `user` et `group` sont des mots réservés PostgreSQL : utiliser des guillemets doubles dans le SQL.
+> `user` est un mot réservé PostgreSQL : utiliser des guillemets doubles (`"user"`) dans le SQL.
 
 ## Documentation détaillée
 
