@@ -17,14 +17,18 @@
 -- Bon
 user
 operation
-budget_category
+budget
+account
 recurrence_rule
+monthly_budget
+budget_member
 
 -- Mauvais
 Users
 operations
 budgetCategory
 tbl_transaction
+group
 ```
 
 ### Colonnes
@@ -67,7 +71,7 @@ Le projet utilise **deux stratégies** de clé primaire selon le type de table :
 
 | Stratégie         | Type PostgreSQL                  | Type Java     | Usage                                                                                  |
 | ----------------- | -------------------------------- | ------------- | -------------------------------------------------------------------------------------- |
-| **UUID**          | `UUID DEFAULT gen_random_uuid()` | `UUID`        | Entités métier principales (`user`, `operation`, `account`, `group`, `monthly_budget`) |
+| **UUID**          | `UUID DEFAULT gen_random_uuid()` | `UUID`        | Entités métier principales (`user`, `operation`, `account`, `budget`, `monthly_budget`) |
 | **SERIAL**        | `SERIAL PRIMARY KEY`             | `Integer`     | Tables de référence/lookup (`subscription`, `category`, `recurrence_rule`)             |
 | **Clé composite** | Combinaison de FK                | Clé composite | Tables de jointure (`user_group`)                                                      |
 
@@ -98,10 +102,13 @@ Convention de nommage : `fk_<table_source>_<table_cible>`
 -- Constraint naming
 CONSTRAINT fk_operation_user FOREIGN KEY (user_id) REFERENCES "user"(id)
 CONSTRAINT fk_operation_monthly_budget FOREIGN KEY (monthly_budget_id) REFERENCES monthly_budget(id)
-CONSTRAINT fk_account_group FOREIGN KEY (group_id) REFERENCES "group"(id)
+CONSTRAINT fk_account_user FOREIGN KEY (user_id) REFERENCES "user"(id)
+CONSTRAINT fk_monthly_budget_budget FOREIGN KEY (budget_id) REFERENCES budget(id)
+CONSTRAINT fk_budget_member_user FOREIGN KEY (user_id) REFERENCES "user"(id)
+CONSTRAINT fk_budget_member_budget FOREIGN KEY (budget_id) REFERENCES budget(id)
 ```
 
-> **Note** : `user` et `group` sont des mots réservés en PostgreSQL. Les entourer de guillemets doubles (`"user"`, `"group"`) dans les requêtes SQL.
+> **Note** : `user` est un mot réservé en PostgreSQL. L'entourer de guillemets doubles (`"user"`) dans les requêtes SQL.
 
 ### Index
 
@@ -110,7 +117,12 @@ Convention de nommage : `idx_<table>_<colonne(s)>`
 ```sql
 CREATE INDEX idx_operation_user_id ON operation(user_id);
 CREATE INDEX idx_operation_monthly_budget_id ON operation(monthly_budget_id);
+CREATE INDEX idx_operation_budget_id ON operation(budget_id);
+CREATE INDEX idx_account_user_id ON account(user_id);
+CREATE INDEX idx_monthly_budget_budget_id ON monthly_budget(budget_id);
+CREATE INDEX idx_budget_member_user_id ON budget_member(user_id);
 CREATE UNIQUE INDEX idx_user_email ON "user"(email);
+CREATE UNIQUE INDEX idx_budget_invite_code ON budget(invite_code) WHERE invite_code IS NOT NULL;
 ```
 
 ### Contraintes
@@ -154,11 +166,15 @@ initial_balance DECIMAL(12, 2) NOT NULL DEFAULT 0
 
 ```
 backend/src/main/resources/db/migration/
-├── V1__create_user_table.sql
-├── V2__create_group_table.sql
+├── V1__create_subscription_table.sql
+├── V2__create_user_table.sql
 ├── V3__create_account_table.sql
-├── V4__create_operation_table.sql
-└── V5__create_category_table.sql
+├── V4__create_budget_table.sql
+├── V5__create_budget_member_table.sql
+├── V6__create_category_table.sql
+├── V7__create_recurrence_rule_table.sql
+├── V8__create_monthly_budget_table.sql
+└── V9__create_operation_table.sql
 ```
 
 ### Nommage des fichiers
@@ -180,12 +196,13 @@ Format : `V<version>__<description_snake_case>.sql`
 ### Exemple de migration
 
 ```sql
--- V1__create_user_table.sql
+-- V2__create_user_table.sql
 CREATE TABLE "user" (
     id                UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
     email             VARCHAR(255)    NOT NULL,
     password          VARCHAR(255)    NOT NULL,
     name              VARCHAR(100)    NOT NULL,
+    email_verified    BOOLEAN         NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP       NOT NULL DEFAULT NOW(),
     updated_at        TIMESTAMP       NOT NULL DEFAULT NOW(),
     subscription_id   INTEGER         NOT NULL REFERENCES subscription(id),
@@ -194,6 +211,29 @@ CREATE TABLE "user" (
 );
 
 CREATE INDEX idx_user_email ON "user"(email);
+
+-- V4__create_budget_table.sql
+CREATE TABLE budget (
+    id            UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
+    name          VARCHAR(100)    NOT NULL,
+    type          VARCHAR(10)     NOT NULL CHECK (type IN ('solo', 'shared')),
+    invite_code   VARCHAR(20)     UNIQUE,
+    created_at    TIMESTAMP       NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMP       NOT NULL DEFAULT NOW()
+);
+-- Le propriétaire est identifié via budget_member WHERE role = 'owner'
+
+-- V5__create_budget_member_table.sql
+CREATE TABLE budget_member (
+    user_id             UUID            NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    budget_id           UUID            NOT NULL REFERENCES budget(id) ON DELETE CASCADE,
+    role                VARCHAR(10)     NOT NULL CHECK (role IN ('owner', 'member')),
+    contribution_rate   DECIMAL(5, 2)   NOT NULL DEFAULT 50.00
+        CHECK (contribution_rate BETWEEN 0 AND 100),
+    joined_at           TIMESTAMP       NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (user_id, budget_id)
+);
 ```
 
 ## Relations
