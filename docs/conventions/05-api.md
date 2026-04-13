@@ -20,17 +20,53 @@
 ### Exemples
 
 ```
-GET     /api/v1/budgets                    # Liste des budgets
-GET     /api/v1/budgets/:id                # Détail d'un budget
-POST    /api/v1/budgets                    # Créer un budget
-PUT     /api/v1/budgets/:id                # Mettre à jour un budget
-DELETE  /api/v1/budgets/:id                # Supprimer un budget
+# Auth
+POST    /api/v1/auth/register              # Inscription (+ choix abonnement)
+POST    /api/v1/auth/login                 # Connexion
+POST    /api/v1/auth/logout                # Déconnexion
+GET     /api/v1/auth/verify-email          # Confirmation email
 
-GET     /api/v1/budgets/:id/transactions   # Transactions d'un budget
-POST    /api/v1/budgets/:id/transactions   # Ajouter une transaction à un budget
-
+# Profil utilisateur
 GET     /api/v1/users/me                   # Profil de l'utilisateur connecté
 PUT     /api/v1/users/me                   # Modifier son profil
+DELETE  /api/v1/users/me                   # Supprimer son compte
+PATCH   /api/v1/users/me/subscription      # Changer d'abonnement
+
+# Comptes bancaires
+GET     /api/v1/accounts                   # Liste des comptes de l'utilisateur
+POST    /api/v1/accounts                   # Créer un compte
+GET     /api/v1/accounts/:id               # Détail d'un compte
+PUT     /api/v1/accounts/:id               # Modifier un compte
+DELETE  /api/v1/accounts/:id               # Supprimer un compte
+GET     /api/v1/accounts/:id/balance       # Solde restant (argent de poche)
+
+# Budgets
+GET     /api/v1/budgets                    # Liste des budgets de l'utilisateur
+POST    /api/v1/budgets                    # Créer un budget (solo ou partagé)
+GET     /api/v1/budgets/:id                # Détail d'un budget
+PUT     /api/v1/budgets/:id                # Modifier un budget
+DELETE  /api/v1/budgets/:id                # Supprimer un budget
+POST    /api/v1/budgets/join               # Rejoindre un budget partagé (via invite_code)
+
+# Membres d'un budget partagé
+GET     /api/v1/budgets/:id/members        # Liste des membres
+POST    /api/v1/budgets/:id/members        # Inviter un membre (par email)
+PATCH   /api/v1/budgets/:id/members/:uid   # Modifier le taux de contribution
+DELETE  /api/v1/budgets/:id/members/:uid   # Retirer un membre
+GET     /api/v1/budgets/:id/contribution   # Calcul contribution par membre
+
+# Opérations
+GET     /api/v1/accounts/:id/operations    # Opérations d'un compte
+POST    /api/v1/accounts/:id/operations    # Ajouter une opération à un compte
+GET     /api/v1/budgets/:id/operations     # Opérations d'un budget
+POST    /api/v1/budgets/:id/operations     # Ajouter une opération à un budget
+PUT     /api/v1/operations/:id             # Modifier une opération
+DELETE  /api/v1/operations/:id             # Supprimer une opération
+POST    /api/v1/operations/:id/recurrence  # Attacher une règle de récurrence
+
+# Budgets mensuels
+GET     /api/v1/budgets/:id/monthly        # Liste des budgets mensuels
+GET     /api/v1/budgets/:id/monthly/:year/:month  # Budget mensuel d'un mois
 ```
 
 ## Méthodes HTTP
