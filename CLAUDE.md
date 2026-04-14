@@ -149,7 +149,7 @@ Ordre : Node.js natifs → Externes → Internes (`@/`) → Types → Styles (s�
 - Montants : `DECIMAL(12, 2)` en PostgreSQL, `BigDecimal` en Java
 - Timestamps : `created_at` et `updated_at` sur chaque table
 - Relations JPA : toujours `FetchType.LAZY`
-- Migrations : Flyway, format `V<n>__<description_snake_case>.sql`
+- Schéma géré par **Hibernate** (`spring.jpa.hibernate.ddl-auto=update`) — pas de Flyway, pas de migrations SQL manuelles
 
 > `user` est un mot réservé PostgreSQL : utiliser des guillemets doubles (`"user"`) dans le SQL.
 

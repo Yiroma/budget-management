@@ -9,7 +9,7 @@ Ce dossier contient les diagrammes de modélisation du projet Budget Management.
 | `use-case.webp` | Diagramme de cas d'utilisation     | Acteurs (Visitor, User) et fonctionnalités du système |
 | `mcd.webp`      | Modèle Conceptuel de Données (MCD) | Entités, attributs et relations conceptuelles         |
 | `mld.webp`      | Modèle Logique de Données (MLD)    | Transposition en schéma relationnel                   |
-| `mpd.webp`      | Modèle Physique de Données (MPD)   | Implémentation PostgreSQL avec types et contraintes   |
+| `mpd.webp`      | Modèle Physique de Données (MPD)   | Schéma PostgreSQL avec types et contraintes (référence pour les entités JPA) |
 
 ## Entités principales
 

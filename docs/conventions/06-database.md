@@ -160,81 +160,19 @@ amount DECIMAL(12, 2) NOT NULL
 initial_balance DECIMAL(12, 2) NOT NULL DEFAULT 0
 ```
 
-## Migrations (Flyway)
+## Gestion du schéma (Hibernate)
 
-### Structure des fichiers
+Le schéma de base de données est entièrement géré par **Hibernate** via `spring.jpa.hibernate.ddl-auto`.
 
-```
-backend/src/main/resources/db/migration/
-├── V1__create_subscription_table.sql
-├── V2__create_user_table.sql
-├── V3__create_account_table.sql
-├── V4__create_budget_table.sql
-├── V5__create_budget_member_table.sql
-├── V6__create_category_table.sql
-├── V7__create_recurrence_rule_table.sql
-├── V8__create_monthly_budget_table.sql
-└── V9__create_operation_table.sql
+- **Pas de Flyway**, pas de migrations SQL manuelles
+- Le schéma est généré et mis à jour automatiquement à partir des entités JPA
+- Configuration dans `application.properties` :
+
+```properties
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-### Nommage des fichiers
-
-Format : `V<version>__<description_snake_case>.sql`
-
-- Le préfixe `V` suivi du numéro de version (incrémental)
-- Deux underscores `__` séparent la version de la description
-- Description en **snake_case**
-- Extension `.sql`
-
-### Règles
-
-- Une migration = **un changement logique**
-- Les migrations sont **immuables** : ne jamais modifier une migration déjà appliquée
-- Toujours tester les migrations sur une BDD vierge
-- Inclure les rollbacks dans les commentaires si possible
-
-### Exemple de migration
-
-```sql
--- V2__create_user_table.sql
-CREATE TABLE "user" (
-    id                UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
-    email             VARCHAR(255)    NOT NULL,
-    password          VARCHAR(255)    NOT NULL,
-    name              VARCHAR(100)    NOT NULL,
-    email_verified    BOOLEAN         NOT NULL DEFAULT FALSE,
-    created_at        TIMESTAMP       NOT NULL DEFAULT NOW(),
-    updated_at        TIMESTAMP       NOT NULL DEFAULT NOW(),
-    subscription_id   INTEGER         NOT NULL REFERENCES subscription(id),
-
-    CONSTRAINT uq_user_email UNIQUE (email)
-);
-
-CREATE INDEX idx_user_email ON "user"(email);
-
--- V4__create_budget_table.sql
-CREATE TABLE budget (
-    id            UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
-    name          VARCHAR(100)    NOT NULL,
-    type          VARCHAR(10)     NOT NULL CHECK (type IN ('solo', 'shared')),
-    invite_code   VARCHAR(20)     UNIQUE,
-    created_at    TIMESTAMP       NOT NULL DEFAULT NOW(),
-    updated_at    TIMESTAMP       NOT NULL DEFAULT NOW()
-);
--- Le propriétaire est identifié via budget_member WHERE role = 'owner'
-
--- V5__create_budget_member_table.sql
-CREATE TABLE budget_member (
-    user_id             UUID            NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-    budget_id           UUID            NOT NULL REFERENCES budget(id) ON DELETE CASCADE,
-    role                VARCHAR(10)     NOT NULL CHECK (role IN ('owner', 'member')),
-    contribution_rate   DECIMAL(5, 2)   NOT NULL DEFAULT 50.00
-        CHECK (contribution_rate BETWEEN 0 AND 100),
-    joined_at           TIMESTAMP       NOT NULL DEFAULT NOW(),
-
-    PRIMARY KEY (user_id, budget_id)
-);
-```
+> `update` : Hibernate applique les différences entre les entités et le schéma existant sans supprimer de données. Utiliser `create` uniquement sur une BDD vierge de développement.
 
 ## Relations
 
