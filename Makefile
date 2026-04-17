@@ -13,13 +13,19 @@ FRONTEND = budget-frontend
 BACKEND  = budget-backend
 DB       = budget-db
 
+ifeq ($(OS),Windows_NT)
+    MVNW = mvnw.cmd
+else
+    MVNW = ./mvnw
+endif
+
 # --- Cible par défaut -------------------------------------------------------
 
 .DEFAULT_GOAL := help
 
 # --- Commandes --------------------------------------------------------------
 
-.PHONY: help dev run build stop down restart test lint lint-fix format logs prune
+.PHONY: help dev run build stop down restart test lint lint-fix format java-format java-format-check logs prune
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -55,7 +61,13 @@ lint-fix: ## Corrige automatiquement les erreurs de lint frontend
 
 format: ## Formate tous les fichiers (Prettier + Spotless)
 	npm run format
-	npm run java:format
+	cd backend && $(MVNW) spotless:apply -q
+
+java-format: ## Formate les fichiers Java (Spotless)
+	cd backend && $(MVNW) spotless:apply -q
+
+java-format-check: ## Vérifie le formatage Java sans modifier
+	cd backend && $(MVNW) spotless:check -q
 
 logs: ## Affiche les logs de tous les containers (follow)
 	$(COMPOSE_DEV) logs -f
