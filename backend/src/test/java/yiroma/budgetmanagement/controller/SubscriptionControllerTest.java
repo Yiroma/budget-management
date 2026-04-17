@@ -9,6 +9,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import yiroma.budgetmanagement.dto.SubscriptionResponse;
 import yiroma.budgetmanagement.enums.SubscriptionPlan;
+import yiroma.budgetmanagement.repository.UserRepository;
+import yiroma.budgetmanagement.service.JwtService;
 import yiroma.budgetmanagement.service.SubscriptionService;
 
 import java.util.List;
@@ -29,6 +31,12 @@ class SubscriptionControllerTest {
 
 	@MockitoBean
 	private SubscriptionService subscriptionService;
+
+	@MockitoBean
+	private JwtService jwtService;
+
+	@MockitoBean
+	private UserRepository userRepository;
 
 	@Test
 	void listSubscriptions_returns200WithList() throws Exception {

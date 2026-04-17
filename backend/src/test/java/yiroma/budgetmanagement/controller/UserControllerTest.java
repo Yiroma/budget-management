@@ -18,6 +18,8 @@ import yiroma.budgetmanagement.dto.UserResponse;
 import yiroma.budgetmanagement.dto.UserUpdateRequest;
 import yiroma.budgetmanagement.enums.SubscriptionPlan;
 import yiroma.budgetmanagement.exception.NotFoundException;
+import yiroma.budgetmanagement.repository.UserRepository;
+import yiroma.budgetmanagement.service.JwtService;
 import yiroma.budgetmanagement.service.UserService;
 
 import java.time.LocalDateTime;
@@ -45,6 +47,12 @@ class UserControllerTest {
 
 	@MockitoBean
 	private UserService userService;
+
+	@MockitoBean
+	private JwtService jwtService;
+
+	@MockitoBean
+	private UserRepository userRepository;
 
 	private ObjectMapper objectMapper;
 	private UserResponse userResponse;

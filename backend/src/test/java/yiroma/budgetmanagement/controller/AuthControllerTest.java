@@ -12,7 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import yiroma.budgetmanagement.dto.LoginRequest;
 import yiroma.budgetmanagement.dto.TokenResponse;
 import yiroma.budgetmanagement.exception.UnauthorizedException;
+import yiroma.budgetmanagement.repository.UserRepository;
 import yiroma.budgetmanagement.service.AuthService;
+import yiroma.budgetmanagement.service.JwtService;
 import yiroma.budgetmanagement.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +39,12 @@ class AuthControllerTest {
 
 	@MockitoBean
 	private AuthService authService;
+
+	@MockitoBean
+	private JwtService jwtService;
+
+	@MockitoBean
+	private UserRepository userRepository;
 
 	@Test
 	void login_withValidCredentials_returns200WithToken() throws Exception {
