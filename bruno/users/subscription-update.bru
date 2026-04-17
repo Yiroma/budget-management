@@ -1,0 +1,21 @@
+meta {
+  name: Update My Subscription
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/users/me/subscription
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "subscriptionId": 2
+  }
+}

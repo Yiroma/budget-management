@@ -6,7 +6,12 @@
 
 **budget.management** est une application web SaaS de gestion de budget personnel et partagé. Elle permet à ses utilisateurs de connaître, dès le début du mois, leur solde réellement disponible après déduction de toutes leurs charges récurrentes.
 
-L'application cible trois profils d'utilisateurs : les personnes seules (**Solo**), les couples (**Duo**) et les groupes (colocation, famille, association — **Multi**). Elle est conçue **mobile-first** et responsive (mobile, tablette, desktop), avec une future déclinaison en application mobile native (iOS et Android).
+L'application s'adresse à tous les profils : personnes seules, couples, colocations ou familles. Un utilisateur peut gérer des **budgets solo** (dépenses personnelles) et des **budgets partagés** (dépenses communes entre plusieurs membres). Deux plans d'abonnement sont disponibles :
+
+- **Free** : 1 compte, 1 budget, jusqu'à 2 membres par budget, avec publicité
+- **Premium** : comptes, budgets et membres illimités, sans publicité
+
+L'application est conçue **mobile-first** et responsive (mobile, tablette, desktop), avec une future déclinaison en application mobile native (iOS et Android).
 
 **Valeurs de la marque :** clarté, sérénité, confiance, sobriété.
 
