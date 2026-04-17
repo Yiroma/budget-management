@@ -12,17 +12,17 @@ Il n'y a aucune connexion avec de vrais comptes bancaires — toutes les valeurs
 
 ### Abonnements
 
-| Plan | Comptes | Budgets | Membres/budget | Pub |
-|------|---------|---------|----------------|-----|
-| **Free** | 1 | 1 | 2 | Oui |
-| **Premium** | Illimité | Illimité | Illimité | Non |
+| Plan        | Comptes  | Budgets  | Membres/budget | Pub |
+| ----------- | -------- | -------- | -------------- | --- |
+| **Free**    | 1        | 1        | 2              | Oui |
+| **Premium** | Illimité | Illimité | Illimité       | Non |
 
 ### Entités métier
 
 - **Account** : compte bancaire virtuel appartenant à un utilisateur (ex : compte courant, livret)
 - **Budget** : enveloppe de dépenses, solo ou partagée entre plusieurs utilisateurs (remplace l'ancien concept de "groupe")
-  - *Solo* : dépenses ponctuelles personnelles (ex : "Loisirs perso", "Voiture")
-  - *Partagé* : dépenses communes avec d'autres membres (ex : "Dépenses couple", "Coloc")
+  - _Solo_ : dépenses ponctuelles personnelles (ex : "Loisirs perso", "Voiture")
+  - _Partagé_ : dépenses communes avec d'autres membres (ex : "Dépenses couple", "Coloc")
 - **Operation** : mouvement financier (revenu ou dépense) attaché à un compte ou un budget
 - **Recurrence rule** : règle de répétition automatique d'une opération (mensuel, tous les X mois…)
 - **Monthly budget** : instantiation mensuelle d'un budget pour un mois/année donné
