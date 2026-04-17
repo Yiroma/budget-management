@@ -52,3 +52,8 @@ frontend/yarn-error.log*
 # Docker
 # ========================
 postgres_data/
+
+# ========================
+# Bruno
+# ========================
+bruno/environments/local.bru
