@@ -19,7 +19,7 @@ DB       = budget-db
 
 # --- Commandes --------------------------------------------------------------
 
-.PHONY: help dev run build stop down restart test lint logs prune
+.PHONY: help dev run build stop down restart test lint lint-fix format logs prune
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -47,8 +47,15 @@ test: ## Lance tous les tests (front + back)
 	$(COMPOSE_DEV) exec $(BACKEND) ./mvnw test
 	$(COMPOSE_DEV) exec $(FRONTEND) npm test
 
-lint: ## Lance le linting frontend (ESLint)
-	$(COMPOSE_DEV) exec $(FRONTEND) npm run lint
+lint: ## Vérifie le linting frontend (ESLint)
+	npm run lint
+
+lint-fix: ## Corrige automatiquement les erreurs de lint frontend
+	npm run lint:fix
+
+format: ## Formate tous les fichiers (Prettier + Spotless)
+	npm run format
+	npm run java:format
 
 logs: ## Affiche les logs de tous les containers (follow)
 	$(COMPOSE_DEV) logs -f
