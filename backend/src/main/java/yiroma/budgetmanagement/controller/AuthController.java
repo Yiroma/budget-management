@@ -20,23 +20,24 @@ import yiroma.budgetmanagement.service.UserService;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
-    private final AuthService authService;
+	private final UserService userService;
+	private final AuthService authService;
 
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse register(@Valid @RequestBody RegisterRequest request) {
-        return userService.register(request);
-    }
+	@PostMapping("/register")
+	@ResponseStatus(HttpStatus.CREATED)
+	public UserResponse register(@Valid @RequestBody RegisterRequest request) {
+		return userService.register(request);
+	}
 
-    @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
-    }
+	@PostMapping("/login")
+	public TokenResponse login(@Valid @RequestBody LoginRequest request) {
+		return authService.login(request);
+	}
 
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout() {
-        // TODO issue 17 : implémenter une blacklist de tokens pour invalider le JWT côté serveur
-    }
+	@PostMapping("/logout")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void logout() {
+		// TODO issue 17 : implémenter une blacklist de tokens pour invalider le JWT
+		// côté serveur
+	}
 }

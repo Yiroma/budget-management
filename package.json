@@ -1,0 +1,18 @@
+{
+  "name": "budget-management",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "lint": "cd frontend && npx eslint .",
+    "lint:fix": "cd frontend && npx eslint . --fix",
+    "format": "cd frontend && npx prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "cd frontend && npx prettier --check \"src/**/*.{ts,tsx}\"",
+    "java:format": "make java-format",
+    "java:format:check": "make java-format-check"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
+  }
+}

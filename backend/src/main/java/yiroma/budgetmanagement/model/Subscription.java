@@ -26,29 +26,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Subscription {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plan", nullable = false, unique = true, length = 20)
-    private SubscriptionPlan plan;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "plan", nullable = false, unique = true, length = 20)
+	private SubscriptionPlan plan;
 
-    @Column(name = "max_accounts", nullable = false)
-    private Integer maxAccounts;
+	@Column(name = "max_accounts", nullable = false)
+	private Integer maxAccounts;
 
-    @Column(name = "max_budgets", nullable = false)
-    private Integer maxBudgets;
+	@Column(name = "max_budgets", nullable = false)
+	private Integer maxBudgets;
 
-    @Column(name = "max_members_per_budget", nullable = false)
-    private Integer maxMembersPerBudget;
+	@Column(name = "max_members_per_budget", nullable = false)
+	private Integer maxMembersPerBudget;
 
-    @Column(name = "has_ads", nullable = false)
-    private Boolean hasAds;
+	@Column(name = "has_ads", nullable = false)
+	private Boolean hasAds;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+	@Column(name = "updated_at", nullable = false)
+	private LocalDateTime updatedAt;
 }

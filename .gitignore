@@ -5,6 +5,7 @@
 !.env.sample
 *.log
 .DS_Store
+node_modules/
 
 # ========================
 # IDE
