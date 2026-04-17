@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import yiroma.budgetmanagement.dto.SubscriptionResponse;
 import yiroma.budgetmanagement.dto.SubscriptionUpdateRequest;
 import yiroma.budgetmanagement.dto.UserResponse;
@@ -22,6 +22,7 @@ import yiroma.budgetmanagement.repository.UserRepository;
 import yiroma.budgetmanagement.service.JwtService;
 import yiroma.budgetmanagement.service.UserService;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -57,6 +58,13 @@ class UserControllerTest {
 	private ObjectMapper objectMapper;
 	private UserResponse userResponse;
 
+	private static RequestPostProcessor principal(String username) {
+		return request -> {
+			request.setUserPrincipal((Principal) () -> username);
+			return request;
+		};
+	}
+
 	@BeforeEach
 	void setUp() {
 		objectMapper = new ObjectMapper();
@@ -68,48 +76,44 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void getMe_withAuthenticatedUser_returns200() throws Exception {
 		when(userService.getMe("user@example.com")).thenReturn(userResponse);
 
-		mockMvc.perform(get("/api/v1/users/me")).andExpect(status().isOk())
+		mockMvc.perform(get("/api/v1/users/me").with(principal("user@example.com"))).andExpect(status().isOk())
 				.andExpect(jsonPath("$.email").value("user@example.com"))
 				.andExpect(jsonPath("$.name").value("Jean Dupont"))
 				.andExpect(jsonPath("$.subscription.plan").value("FREE"));
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void updateMe_withValidBody_returns200() throws Exception {
 		UserUpdateRequest request = new UserUpdateRequest("Nouveau Nom", null, null);
 		when(userService.updateMe(eq("user@example.com"), any(UserUpdateRequest.class))).thenReturn(userResponse);
 
-		mockMvc.perform(put("/api/v1/users/me").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
-				.andExpect(jsonPath("$.email").value("user@example.com"));
+		mockMvc.perform(put("/api/v1/users/me").with(principal("user@example.com"))
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.email").value("user@example.com"));
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void updateMe_withInvalidEmail_returns400() throws Exception {
 		String invalidBody = """
 				{ "email": "not-an-email" }
 				""";
 
-		mockMvc.perform(put("/api/v1/users/me").contentType(MediaType.APPLICATION_JSON).content(invalidBody))
-				.andExpect(status().isBadRequest());
+		mockMvc.perform(put("/api/v1/users/me").with(principal("user@example.com"))
+				.contentType(MediaType.APPLICATION_JSON).content(invalidBody)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void deleteMe_withAuthenticatedUser_returns204() throws Exception {
 		doNothing().when(userService).deleteMe("user@example.com");
 
-		mockMvc.perform(delete("/api/v1/users/me")).andExpect(status().isNoContent());
+		mockMvc.perform(delete("/api/v1/users/me").with(principal("user@example.com")))
+				.andExpect(status().isNoContent());
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void updateSubscription_withValidId_returns200() throws Exception {
 		SubscriptionUpdateRequest request = new SubscriptionUpdateRequest(2);
 
@@ -122,40 +126,36 @@ class UserControllerTest {
 		when(userService.updateSubscription(eq("user@example.com"), any(SubscriptionUpdateRequest.class)))
 				.thenReturn(premiumUserResponse);
 
-		mockMvc.perform(put("/api/v1/users/me/subscription").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
-				.andExpect(jsonPath("$.subscription.plan").value("PREMIUM"));
+		mockMvc.perform(put("/api/v1/users/me/subscription").with(principal("user@example.com"))
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.subscription.plan").value("PREMIUM"));
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void updateSubscription_withUnknownId_returns404() throws Exception {
 		SubscriptionUpdateRequest request = new SubscriptionUpdateRequest(99);
 
 		when(userService.updateSubscription(eq("user@example.com"), any(SubscriptionUpdateRequest.class)))
 				.thenThrow(new NotFoundException("Abonnement introuvable."));
 
-		mockMvc.perform(put("/api/v1/users/me/subscription").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request))).andExpect(status().isNotFound())
-				.andExpect(jsonPath("$.detail").value("Abonnement introuvable."));
+		mockMvc.perform(put("/api/v1/users/me/subscription").with(principal("user@example.com"))
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isNotFound()).andExpect(jsonPath("$.detail").value("Abonnement introuvable."));
 	}
 
 	@Test
-	@WithMockUser(username = "user@example.com")
 	void updateSubscription_withMissingId_returns400() throws Exception {
 		String invalidBody = "{}";
 
-		mockMvc.perform(
-				put("/api/v1/users/me/subscription").contentType(MediaType.APPLICATION_JSON).content(invalidBody))
-				.andExpect(status().isBadRequest());
+		mockMvc.perform(put("/api/v1/users/me/subscription").with(principal("user@example.com"))
+				.contentType(MediaType.APPLICATION_JSON).content(invalidBody)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	@WithMockUser(username = "unknown@example.com")
 	void getMe_withUnknownUser_returns404() throws Exception {
 		doThrow(new NotFoundException("Utilisateur introuvable.")).when(userService).getMe("unknown@example.com");
 
-		mockMvc.perform(get("/api/v1/users/me")).andExpect(status().isNotFound())
+		mockMvc.perform(get("/api/v1/users/me").with(principal("unknown@example.com"))).andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.detail").value("Utilisateur introuvable."));
 	}
 }
