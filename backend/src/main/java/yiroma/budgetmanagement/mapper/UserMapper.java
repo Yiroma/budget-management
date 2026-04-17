@@ -14,7 +14,7 @@ public class UserMapper {
                 user.getEmail(),
                 user.getName(),
                 user.getEmailVerified(),
-                user.getSubscription().getPlan(),
+                SubscriptionMapper.toResponse(user.getSubscription()),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
