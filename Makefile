@@ -13,10 +13,14 @@ FRONTEND = budget-frontend
 BACKEND  = budget-backend
 DB       = budget-db
 
-ifeq ($(OS),Windows_NT)
-    MVNW = mvnw.cmd
-else
+ifeq ($(shell uname -s 2>/dev/null | cut -c1-5),MINGW)
     MVNW = ./mvnw
+else ifeq ($(shell uname -s 2>/dev/null),Darwin)
+    MVNW = ./mvnw
+else ifeq ($(shell uname -s 2>/dev/null),Linux)
+    MVNW = ./mvnw
+else
+    MVNW = mvnw.cmd
 endif
 
 # --- Cible par défaut -------------------------------------------------------

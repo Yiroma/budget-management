@@ -18,40 +18,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SubscriptionController.class)
-@TestPropertySource(properties = {
-        "jwt.secret=dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW9ubHktMzItYnl0ZXM=",
-        "jwt.expiration=86400000"
-})
+@TestPropertySource(properties = {"jwt.secret=dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW9ubHktMzItYnl0ZXM=",
+		"jwt.expiration=86400000"})
 class SubscriptionControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockitoBean
-    private SubscriptionService subscriptionService;
+	@MockitoBean
+	private SubscriptionService subscriptionService;
 
-    @Test
-    void listSubscriptions_returns200WithList() throws Exception {
-        List<SubscriptionResponse> subscriptions = List.of(
-                new SubscriptionResponse(1, SubscriptionPlan.FREE, 1, 1, 2, true),
-                new SubscriptionResponse(2, SubscriptionPlan.PREMIUM, -1, -1, -1, false)
-        );
+	@Test
+	void listSubscriptions_returns200WithList() throws Exception {
+		List<SubscriptionResponse> subscriptions = List.of(
+				new SubscriptionResponse(1, SubscriptionPlan.FREE, 1, 1, 2, true),
+				new SubscriptionResponse(2, SubscriptionPlan.PREMIUM, -1, -1, -1, false));
 
-        when(subscriptionService.getAll()).thenReturn(subscriptions);
+		when(subscriptionService.getAll()).thenReturn(subscriptions);
 
-        mockMvc.perform(get("/api/v1/subscriptions"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].plan").value("FREE"))
-                .andExpect(jsonPath("$[1].plan").value("PREMIUM"));
-    }
+		mockMvc.perform(get("/api/v1/subscriptions")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(2)).andExpect(jsonPath("$[0].plan").value("FREE"))
+				.andExpect(jsonPath("$[1].plan").value("PREMIUM"));
+	}
 
-    @Test
-    void listSubscriptions_whenEmpty_returns200WithEmptyList() throws Exception {
-        when(subscriptionService.getAll()).thenReturn(List.of());
+	@Test
+	void listSubscriptions_whenEmpty_returns200WithEmptyList() throws Exception {
+		when(subscriptionService.getAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/v1/subscriptions"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(0));
-    }
+		mockMvc.perform(get("/api/v1/subscriptions")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(0));
+	}
 }

@@ -21,81 +21,70 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
-@TestPropertySource(properties = {
-        "jwt.secret=dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW9ubHktMzItYnl0ZXM=",
-        "jwt.expiration=86400000"
-})
+@TestPropertySource(properties = {"jwt.secret=dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW9ubHktMzItYnl0ZXM=",
+		"jwt.expiration=86400000"})
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MockitoBean
-    private UserService userService;
+	@MockitoBean
+	private UserService userService;
 
-    @MockitoBean
-    private AuthService authService;
+	@MockitoBean
+	private AuthService authService;
 
-    @Test
-    void login_withValidCredentials_returns200WithToken() throws Exception {
-        LoginRequest request = new LoginRequest("user@example.com", "SecureP@ss123");
-        TokenResponse response = new TokenResponse("eyJhbGciOiJIUzI1NiIs.fake.token", "Bearer");
+	@Test
+	void login_withValidCredentials_returns200WithToken() throws Exception {
+		LoginRequest request = new LoginRequest("user@example.com", "SecureP@ss123");
+		TokenResponse response = new TokenResponse("eyJhbGciOiJIUzI1NiIs.fake.token", "Bearer");
 
-        when(authService.login(any(LoginRequest.class))).thenReturn(response);
+		when(authService.login(any(LoginRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value(response.accessToken()))
-                .andExpect(jsonPath("$.tokenType").value("Bearer"));
-    }
+		mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
+				.andExpect(jsonPath("$.accessToken").value(response.accessToken()))
+				.andExpect(jsonPath("$.tokenType").value("Bearer"));
+	}
 
-    @Test
-    void login_withInvalidPassword_returns401() throws Exception {
-        LoginRequest request = new LoginRequest("user@example.com", "WrongPassword1!");
+	@Test
+	void login_withInvalidPassword_returns401() throws Exception {
+		LoginRequest request = new LoginRequest("user@example.com", "WrongPassword1!");
 
-        when(authService.login(any(LoginRequest.class)))
-                .thenThrow(new UnauthorizedException("Identifiants incorrects."));
+		when(authService.login(any(LoginRequest.class)))
+				.thenThrow(new UnauthorizedException("Identifiants incorrects."));
 
-        mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.detail").value("Identifiants incorrects."));
-    }
+		mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.detail").value("Identifiants incorrects."));
+	}
 
-    @Test
-    void login_withUnknownEmail_returns401() throws Exception {
-        LoginRequest request = new LoginRequest("unknown@example.com", "SecureP@ss123");
+	@Test
+	void login_withUnknownEmail_returns401() throws Exception {
+		LoginRequest request = new LoginRequest("unknown@example.com", "SecureP@ss123");
 
-        when(authService.login(any(LoginRequest.class)))
-                .thenThrow(new UnauthorizedException("Identifiants incorrects."));
+		when(authService.login(any(LoginRequest.class)))
+				.thenThrow(new UnauthorizedException("Identifiants incorrects."));
 
-        mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.detail").value("Identifiants incorrects."));
-    }
+		mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))).andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.detail").value("Identifiants incorrects."));
+	}
 
-    @Test
-    void login_withInvalidBody_returns400() throws Exception {
-        String invalidBody = """
-                { "email": "not-an-email", "password": "" }
-                """;
+	@Test
+	void login_withInvalidBody_returns400() throws Exception {
+		String invalidBody = """
+				{ "email": "not-an-email", "password": "" }
+				""";
 
-        mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidBody))
-                .andExpect(status().isBadRequest());
-    }
+		mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(invalidBody))
+				.andExpect(status().isBadRequest());
+	}
 
-    @Test
-    void logout_returns204() throws Exception {
-        mockMvc.perform(post("/api/v1/auth/logout"))
-                .andExpect(status().isNoContent());
-    }
+	@Test
+	void logout_returns204() throws Exception {
+		mockMvc.perform(post("/api/v1/auth/logout")).andExpect(status().isNoContent());
+	}
 }

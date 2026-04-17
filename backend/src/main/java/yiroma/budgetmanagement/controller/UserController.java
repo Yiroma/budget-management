@@ -22,28 +22,26 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    @GetMapping("/me")
-    public UserResponse getMe(Principal principal) {
-        return userService.getMe(principal.getName());
-    }
+	@GetMapping("/me")
+	public UserResponse getMe(Principal principal) {
+		return userService.getMe(principal.getName());
+	}
 
-    @PutMapping("/me")
-    public UserResponse updateMe(Principal principal, @Valid @RequestBody UserUpdateRequest request) {
-        return userService.updateMe(principal.getName(), request);
-    }
+	@PutMapping("/me")
+	public UserResponse updateMe(Principal principal, @Valid @RequestBody UserUpdateRequest request) {
+		return userService.updateMe(principal.getName(), request);
+	}
 
-    @DeleteMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMe(Principal principal) {
-        userService.deleteMe(principal.getName());
-    }
+	@DeleteMapping("/me")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMe(Principal principal) {
+		userService.deleteMe(principal.getName());
+	}
 
-    @PutMapping("/me/subscription")
-    public UserResponse updateSubscription(
-            Principal principal,
-            @Valid @RequestBody SubscriptionUpdateRequest request) {
-        return userService.updateSubscription(principal.getName(), request);
-    }
+	@PutMapping("/me/subscription")
+	public UserResponse updateSubscription(Principal principal, @Valid @RequestBody SubscriptionUpdateRequest request) {
+		return userService.updateSubscription(principal.getName(), request);
+	}
 }

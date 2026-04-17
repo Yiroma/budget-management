@@ -14,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubscriptionController {
 
-    private final SubscriptionService subscriptionService;
+	private final SubscriptionService subscriptionService;
 
-    @GetMapping
-    public List<SubscriptionResponse> listSubscriptions() {
-        return subscriptionService.getAll();
-    }
+	@GetMapping
+	public List<SubscriptionResponse> listSubscriptions() {
+		return subscriptionService.getAll();
+	}
 }
