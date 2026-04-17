@@ -8,5 +8,5 @@ export default {
       `bash -c "cd frontend && npx eslint --fix ${relativePaths}"`,
     ];
   },
-  'backend/**/*.java': () => ['bash -c "cd backend && ./mvnw spotless:apply -q"'],
+  'backend/**/*.java': () => ['make java-format'],
 };

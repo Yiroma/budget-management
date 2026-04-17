@@ -8,8 +8,8 @@
     "lint:fix": "cd frontend && npx eslint . --fix",
     "format": "cd frontend && npx prettier --write \"src/**/*.{ts,tsx}\"",
     "format:check": "cd frontend && npx prettier --check \"src/**/*.{ts,tsx}\"",
-    "java:format": "cd backend && ./mvnw spotless:apply -q",
-    "java:format:check": "cd backend && ./mvnw spotless:check -q"
+    "java:format": "make java-format",
+    "java:format:check": "make java-format-check"
   },
   "devDependencies": {
     "husky": "^9.1.7",
