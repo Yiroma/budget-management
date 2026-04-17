@@ -1,7 +1,4 @@
 package yiroma.budgetmanagement.dto;
 
-public record TokenResponse(
-        String accessToken,
-        String tokenType
-) {
+public record TokenResponse(String accessToken, String tokenType) {
 }

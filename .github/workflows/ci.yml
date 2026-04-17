@@ -1,0 +1,53 @@
+name: "CI: Format, Lint & Tests"
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  frontend:
+    name: Lint & Format (Frontend)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Prettier check
+        run: npx prettier --check "src/**/*.{ts,tsx}"
+        working-directory: frontend
+
+      - name: ESLint check
+        run: npx eslint .
+        working-directory: frontend
+
+  backend:
+    name: Format check & Tests (Backend)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+
+      - name: Spotless check
+        run: ./mvnw spotless:check -q
+        working-directory: backend
+
+      - name: Tests
+        run: ./mvnw test -q
+        working-directory: backend

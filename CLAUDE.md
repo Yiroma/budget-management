@@ -168,6 +168,10 @@ Les conventions complètes se trouvent dans `docs/conventions/` :
 
 Diagrammes UML dans `docs/diagrams/` (MCD, MLD, MPD, use-case).
 
+## TODO
+
+- **Tests frontend** : aucun framework de test n'est configuré côté Next.js. À mettre en place (Vitest + React Testing Library recommandé) et à intégrer dans la CI (`.github/workflows/static-analysis.yml`).
+
 ## Maintenance de la documentation
 
 Ne pas mettre à jour les README/docs automatiquement à chaque changement. Signaler à l'utilisateur quand une mise à jour de la documentation semble nécessaire (nouvelle feature majeure, changement d'architecture, modification de l'API ou de la structure du projet).

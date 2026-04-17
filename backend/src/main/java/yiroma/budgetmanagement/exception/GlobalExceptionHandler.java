@@ -19,49 +19,44 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UnprocessableException.class)
-    public ProblemDetail handleUnprocessable(UnprocessableException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatusCode.valueOf(422));
-        problem.setDetail(ex.getMessage());
-        return problem;
-    }
+	@ExceptionHandler(UnprocessableException.class)
+	public ProblemDetail handleUnprocessable(UnprocessableException ex) {
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatusCode.valueOf(422));
+		problem.setDetail(ex.getMessage());
+		return problem;
+	}
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ProblemDetail handleUnauthorized(UnauthorizedException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
-        problem.setDetail(ex.getMessage());
-        return problem;
-    }
+	@ExceptionHandler(UnauthorizedException.class)
+	public ProblemDetail handleUnauthorized(UnauthorizedException ex) {
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+		problem.setDetail(ex.getMessage());
+		return problem;
+	}
 
-    @ExceptionHandler(NotFoundException.class)
-    public ProblemDetail handleNotFound(NotFoundException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setDetail(ex.getMessage());
-        return problem;
-    }
+	@ExceptionHandler(NotFoundException.class)
+	public ProblemDetail handleNotFound(NotFoundException ex) {
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+		problem.setDetail(ex.getMessage());
+		return problem;
+	}
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
-        Map<String, List<String>> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.groupingBy(
-                        FieldError::getField,
-                        Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
-                ));
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		Map<String, List<String>> errors = ex.getBindingResult().getFieldErrors().stream()
+				.collect(Collectors.groupingBy(FieldError::getField,
+						Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())));
 
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setDetail("Données invalides.");
-        problem.setProperty("errors", errors);
-        return ResponseEntity.badRequest().body(problem);
-    }
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+		problem.setDetail("Données invalides.");
+		problem.setProperty("errors", errors);
+		return ResponseEntity.badRequest().body(problem);
+	}
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ProblemDetail handleIllegalState(IllegalStateException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        problem.setDetail("Une erreur interne est survenue.");
-        return problem;
-    }
+	@ExceptionHandler(IllegalStateException.class)
+	public ProblemDetail handleIllegalState(IllegalStateException ex) {
+		ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		problem.setDetail("Une erreur interne est survenue.");
+		return problem;
+	}
 }

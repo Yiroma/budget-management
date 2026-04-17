@@ -12,11 +12,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubscriptionService {
 
-    private final SubscriptionRepository subscriptionRepository;
+	private final SubscriptionRepository subscriptionRepository;
 
-    public List<SubscriptionResponse> getAll() {
-        return subscriptionRepository.findAll().stream()
-                .map(SubscriptionMapper::toResponse)
-                .toList();
-    }
+	public List<SubscriptionResponse> getAll() {
+		return subscriptionRepository.findAll().stream().map(SubscriptionMapper::toResponse).toList();
+	}
 }

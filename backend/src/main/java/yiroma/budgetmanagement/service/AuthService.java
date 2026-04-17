@@ -13,19 +13,19 @@ import yiroma.budgetmanagement.repository.UserRepository;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtService jwtService;
 
-    public TokenResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new UnauthorizedException("Identifiants incorrects."));
+	public TokenResponse login(LoginRequest request) {
+		User user = userRepository.findByEmail(request.email())
+				.orElseThrow(() -> new UnauthorizedException("Identifiants incorrects."));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new UnauthorizedException("Identifiants incorrects.");
-        }
+		if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+			throw new UnauthorizedException("Identifiants incorrects.");
+		}
 
-        String token = jwtService.generateToken(user);
-        return new TokenResponse(token, "Bearer");
-    }
+		String token = jwtService.generateToken(user);
+		return new TokenResponse(token, "Bearer");
+	}
 }

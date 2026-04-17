@@ -162,8 +162,9 @@ Controller → Service → Repository → Database
 ### Prérequis
 
 - **Docker** et **Docker Compose**
-- **Make**
-- _(Optionnel)_ Node.js >= 20 et Java 21 pour le développement local sans Docker
+- **Make** — natif sur Mac/Linux, sur Windows : [Git Bash](https://git-scm.com/downloads) ou [WSL](https://learn.microsoft.com/fr-fr/windows/wsl/install)
+- **Node.js** >= 20 — requis en local pour Husky (hooks de commit) et les commandes `make lint` / `make format`
+- **Java 21** — requis en local pour `make format` (Spotless) et `make java-format-check`
 
 ### Lancement rapide
 

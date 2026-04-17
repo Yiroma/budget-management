@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
 
-    Optional<Subscription> findByPlan(SubscriptionPlan plan);
+	Optional<Subscription> findByPlan(SubscriptionPlan plan);
 }
