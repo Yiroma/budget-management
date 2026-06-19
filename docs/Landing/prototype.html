@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget Management — Prenez le contrôle de vos finances</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              playfair: ["Playfair Display", "serif"],
+              sans: ["DM Sans", "sans-serif"],
+            },
+            colors: {
+              forest: { DEFAULT: "#1C3A2F", light: "#2A5242" },
+              sand: { DEFAULT: "#F5F0E8", dark: "#EDE6D6" },
+              gold: { DEFAULT: "#C9A84C", light: "#E2C97E" },
+            },
+            keyframes: {
+              "fade-up": {
+                from: { opacity: 0, transform: "translateY(24px)" },
+                to: { opacity: 1, transform: "translateY(0)" },
+              },
+            },
+            animation: {
+              "fade-up": "fade-up 0.8s ease both",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "DM Sans", sans-serif;
+      }
+      .font-playfair {
+        font-family: "Playfair Display", serif;
+      }
+
+      #navbarWrapper {
+        padding-top: 0;
+      }
+      #navbarWrapper.is-scrolled {
+        padding-top: 1rem;
+      }
+
+      #navbar {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        background-color: transparent;
+        border: 1px solid transparent;
+        box-shadow: none;
+        transition: all 0.3s ease;
+      }
+      #navbar.is-scrolled {
+        width: 92%;
+        max-width: 1280px;
+        border-radius: 9999px;
+        background-color: rgba(245, 240, 232, 0.92);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border-color: rgba(28, 58, 47, 0.08);
+        box-shadow: 0 8px 30px rgba(28, 58, 47, 0.12);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] antialiased">
+    <!-- Navbar -->
+    <nav id="navbarWrapper" class="fixed top-0 left-0 right-0 z-50 flex justify-center">
+      <div id="navbar">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between px-[5%] py-5">
+          <a href="#" class="font-playfair text-xl font-bold text-[#1C3A2F] tracking-tight">
+            budget<span class="text-[#C9A84C]">.</span>management
+          </a>
+
+          <ul class="hidden md:flex items-center gap-8 list-none">
+            <li>
+              <a
+                href="#features"
+                class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+                >Fonctionnalités</a
+              >
+            </li>
+            <li>
+              <a
+                href="#how"
+                class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+                >Comment ça marche</a
+              >
+            </li>
+            <li>
+              <a
+                href="#pricing"
+                class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+                >Tarifs</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="inline-flex items-center justify-center rounded-full bg-[#1C3A2F] text-[#F5F0E8] hover:bg-[#2A5242] text-sm font-medium px-5 py-2.5 transition-colors"
+              >
+                Se connecter
+              </a>
+            </li>
+          </ul>
+
+          <button id="menuBtn" class="md:hidden text-[#1C3A2F]" aria-label="Menu">
+            <svg
+              id="iconMenu"
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <svg
+              id="iconClose"
+              class="hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div
+          id="mobileMenu"
+          class="hidden absolute top-full left-0 right-0 bg-[#F5F0E8] rounded-b-2xl border-b border-[#1C3A2F]/10 px-[5%] py-6 flex flex-col gap-4 md:hidden shadow-sm"
+        >
+          <a
+            href="#features"
+            class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+            >Fonctionnalités</a
+          >
+          <a href="#how" class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+            >Comment ça marche</a
+          >
+          <a
+            href="#pricing"
+            class="text-sm text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-opacity"
+            >Tarifs</a
+          >
+          <a
+            href="#"
+            class="inline-flex items-center justify-center rounded-full bg-[#1C3A2F] text-[#F5F0E8] hover:bg-[#2A5242] w-fit text-sm font-medium px-5 py-2.5 transition-colors"
+          >
+            Se connecter
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="min-h-screen bg-[#F5F0E8] font-sans text-[#1A1A1A]">
+      <!-- Hero -->
+      <section class="relative min-h-screen flex items-center overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none">
+          <div
+            class="absolute inset-0"
+            style="
+              background: radial-gradient(
+                ellipse 70% 60% at 75% 50%,
+                rgba(28, 58, 47, 0.06) 0%,
+                transparent 70%
+              );
+            "
+          ></div>
+          <div
+            class="absolute w-[600px] h-[600px] rounded-full border border-[#1C3A2F]/6 -right-[100px] top-1/2 -translate-y-1/2"
+          >
+            <div class="absolute inset-[60px] rounded-full border border-[#C9A84C]/10"></div>
+          </div>
+        </div>
+
+        <div class="relative z-10 max-w-[1440px] mx-auto w-full px-[5%] pt-32 pb-20">
+          <div class="max-w-2xl animate-fade-up">
+            <span
+              class="inline-flex items-center mb-8 rounded-full border border-[#1C3A2F]/12 bg-[#1C3A2F]/7 text-[#1C3A2F] text-xs font-medium px-4 py-1.5 gap-2"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-[#C9A84C] flex-shrink-0"></span>
+              Gérez vos finances en famille ou en solo
+            </span>
+
+            <h1
+              class="font-playfair text-[clamp(2.8rem,6vw,4.5rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#1A1A1A] mb-6"
+            >
+              Votre budget,
+              <br />
+              <em class="not-italic font-playfair italic">enfin sous contrôle.</em>
+            </h1>
+
+            <p class="text-lg text-[#6B7280] leading-relaxed max-w-lg mb-10 font-light">
+              Sachez dès le 1<sup>er</sup> du mois combien il vous reste <em>vraiment</em> après
+              toutes vos charges. Seul, en couple ou en colocation — gérez votre argent simplement.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-5">
+              <a
+                href="#"
+                class="inline-flex items-center rounded-full bg-[#1C3A2F] hover:bg-[#2A5242] text-[#F5F0E8] px-8 py-4 text-base font-medium shadow-[0_4px_20px_rgba(28,58,47,0.2)] hover:shadow-[0_8px_30px_rgba(28,58,47,0.25)] hover:-translate-y-0.5 transition-all"
+              >
+                Commencer gratuitement
+              </a>
+
+              <a
+                href="#how"
+                class="flex items-center gap-2 text-[#1A1A1A]/70 hover:text-[#1A1A1A] text-base transition-colors group"
+              >
+                Voir comment ça marche
+                <svg
+                  class="group-hover:translate-x-1 transition-transform"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats band -->
+      <div class="bg-[#1C3A2F]">
+        <div class="max-w-[1440px] mx-auto py-12 px-[5%] grid grid-cols-3 gap-8 text-center">
+          <div>
+            <p
+              class="font-playfair text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-[#C9A84C] leading-none mb-1.5"
+            >
+              3×
+            </p>
+            <p class="text-xs text-[#F5F0E8]/60 font-light">Plus de visibilité sur vos finances</p>
+          </div>
+          <div>
+            <p
+              class="font-playfair text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-[#C9A84C] leading-none mb-1.5"
+            >
+              100%
+            </p>
+            <p class="text-xs text-[#F5F0E8]/60 font-light">Vos données, privées et sécurisées</p>
+          </div>
+          <div>
+            <p
+              class="font-playfair text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-[#C9A84C] leading-none mb-1.5"
+            >
+              ∞
+            </p>
+            <p class="text-xs text-[#F5F0E8]/60 font-light">Opérations récurrentes automatisées</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <section id="features" class="max-w-[1440px] mx-auto px-[5%] py-28">
+        <span class="text-xs font-medium tracking-[0.15em] uppercase text-[#C9A84C] mb-3 block"
+          >Fonctionnalités</span
+        >
+        <h2
+          class="font-playfair text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.2] tracking-[-0.02em] text-[#1A1A1A] max-w-xl mb-14"
+        >
+          Tout ce qu'il vous faut pour <em class="italic text-[#1C3A2F]">gérer sereinement.</em>
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              📊
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Solde réel dès le 1er du mois
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              Enregistrez revenus et charges récurrentes en début de mois. L'app calcule
+              immédiatement ce qu'il vous reste réellement pour vivre.
+            </p>
+          </div>
+
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              🔁
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Récurrence automatique
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              Loyer, abonnements, crédits... Vos dépenses récurrentes se reportent automatiquement
+              chaque mois. Zéro ressaisie.
+            </p>
+          </div>
+
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              💳
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Carte à débit différé
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              Anticipez vos prélèvements de fin de mois en enregistrant vos dépenses différées. Plus
+              de mauvaises surprises.
+            </p>
+          </div>
+
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              👫
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Compte commun partagé
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              En duo ou en groupe, gérez ensemble un compte commun. L'app calcule exactement ce que
+              chacun doit verser selon votre répartition.
+            </p>
+          </div>
+
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              ⚖️
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Répartition personnalisable
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              50/50 par défaut, mais ajustable selon les revenus de chacun. Chaque membre voit sa
+              part équitable des charges communes.
+            </p>
+          </div>
+
+          <div
+            class="group relative bg-white rounded-2xl p-10 border border-[#1C3A2F]/6 overflow-hidden hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(28,58,47,0.1)] transition-all duration-300"
+          >
+            <div
+              class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C3A2F] to-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+            <div
+              class="w-13 h-13 rounded-2xl bg-[#1C3A2F]/7 flex items-center justify-center text-2xl mb-6"
+            >
+              📱
+            </div>
+            <h3 class="font-playfair text-xl font-semibold text-[#1A1A1A] mb-3">
+              Mobile-first &amp; responsive
+            </h3>
+            <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+              Conçue pour être fluide sur mobile, tablette et desktop. Vos finances disponibles où
+              que vous soyez.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how" class="bg-[#EDE6D6]">
+        <div class="max-w-[1440px] mx-auto px-[5%] py-28">
+          <span class="text-xs font-medium tracking-[0.15em] uppercase text-[#C9A84C] mb-3 block"
+            >Comment ça marche</span
+          >
+          <h2
+            class="font-playfair text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.2] tracking-[-0.02em] text-[#1A1A1A] max-w-xl mb-14"
+          >
+            Démarrez en quelques <em class="italic text-[#1C3A2F]">minutes.</em>
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="pt-2">
+              <p class="font-playfair text-[4rem] font-bold text-[#1C3A2F]/8 leading-none mb-4">
+                01
+              </p>
+              <h3 class="font-playfair text-lg font-semibold text-[#1A1A1A] mb-2">
+                Créez votre compte
+              </h3>
+              <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+                Inscrivez-vous et choisissez votre formule : Free ou Premium. Accédez à votre espace
+                en quelques secondes.
+              </p>
+            </div>
+            <div class="pt-2">
+              <p class="font-playfair text-[4rem] font-bold text-[#1C3A2F]/8 leading-none mb-4">
+                02
+              </p>
+              <h3 class="font-playfair text-lg font-semibold text-[#1A1A1A] mb-2">
+                Ajoutez vos revenus
+              </h3>
+              <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+                En début de mois, renseignez votre salaire, CAF, aides... et déduisez votre éventuel
+                découvert du mois précédent.
+              </p>
+            </div>
+            <div class="pt-2">
+              <p class="font-playfair text-[4rem] font-bold text-[#1C3A2F]/8 leading-none mb-4">
+                03
+              </p>
+              <h3 class="font-playfair text-lg font-semibold text-[#1A1A1A] mb-2">
+                Enregistrez vos charges
+              </h3>
+              <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+                Loyer, abonnements, crédits, dépenses différées... L'app calcule immédiatement votre
+                solde disponible réel.
+              </p>
+            </div>
+            <div class="pt-2">
+              <p class="font-playfair text-[4rem] font-bold text-[#1C3A2F]/8 leading-none mb-4">
+                04
+              </p>
+              <h3 class="font-playfair text-lg font-semibold text-[#1A1A1A] mb-2">
+                Suivez au fil du mois
+              </h3>
+              <p class="text-sm text-[#6B7280] leading-relaxed font-light">
+                Ajoutez vos dépenses au fur et à mesure. Votre solde s'actualise en temps réel. Le
+                mois suivant, tout repart automatiquement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing -->
+      <section id="pricing" class="max-w-[1440px] mx-auto px-[5%] py-28 text-center">
+        <span class="text-xs font-medium tracking-[0.15em] uppercase text-[#C9A84C] mb-3 block"
+          >Tarifs</span
+        >
+        <h2
+          class="font-playfair text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.2] tracking-[-0.02em] text-[#1A1A1A] mb-14"
+        >
+          Une formule pour <em class="italic text-[#1C3A2F]">chaque situation.</em>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <!-- Free -->
+          <div
+            class="rounded-3xl p-10 text-left border transition-all duration-300 hover:-translate-y-1 bg-white border-[#1C3A2F]/8 hover:shadow-[0_20px_50px_rgba(28,58,47,0.1)]"
+          >
+            <div class="mb-6">
+              <p class="text-xs font-medium tracking-[0.12em] uppercase mb-4 text-[#6B7280]">
+                Free
+              </p>
+              <p class="font-playfair text-5xl font-bold leading-none mb-1 text-[#1A1A1A]">0€</p>
+              <p class="text-sm font-light text-[#6B7280]">pour toujours</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#1C3A2F]/7 text-[#1C3A2F]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#6B7280]">1 compte bancaire</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#1C3A2F]/7 text-[#1C3A2F]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#6B7280]">1 budget, jusqu'à 2 membres</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#1C3A2F]/7 text-[#1C3A2F]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#6B7280]"
+                  >Revenus &amp; dépenses récurrentes</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#1C3A2F]/7 text-[#1C3A2F]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#6B7280]">Solde restant en temps réel</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#6B7280]/8 text-[#6B7280]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#6B7280] opacity-50 italic"
+                  >Avec publicités</span
+                >
+              </li>
+            </ul>
+            <a
+              href="#"
+              class="block w-full text-center rounded-full border border-[#1C3A2F]/20 text-[#1A1A1A] hover:border-[#1C3A2F] hover:bg-[#1C3A2F]/4 font-medium py-3.5 transition-colors"
+            >
+              Commencer gratuitement
+            </a>
+          </div>
+
+          <!-- Premium (highlighted) -->
+          <div
+            class="rounded-3xl p-10 text-left border transition-all duration-300 hover:-translate-y-1 bg-[#1C3A2F] border-[#1C3A2F] hover:shadow-[0_20px_50px_rgba(28,58,47,0.25)]"
+          >
+            <div class="mb-6">
+              <span
+                class="inline-block mb-4 rounded-full bg-[#C9A84C]/20 text-[#C9A84C] text-xs font-medium px-3 py-1"
+                >⭐ Populaire</span
+              >
+              <p class="font-playfair text-5xl font-bold leading-none mb-1 text-[#F5F0E8]">4,99€</p>
+              <p class="text-sm font-light text-[#F5F0E8]/50">par mois</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#F5F0E8]/12 text-[#C9A84C]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#F5F0E8]/70"
+                  >Comptes bancaires illimités</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#F5F0E8]/12 text-[#C9A84C]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#F5F0E8]/70"
+                  >Budgets illimités, membres illimités</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#F5F0E8]/12 text-[#C9A84C]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#F5F0E8]/70"
+                  >Idéal couple, colocation, famille</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#F5F0E8]/12 text-[#C9A84C]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#F5F0E8]/70"
+                  >Répartition personnalisable (pondérée)</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#F5F0E8]/12 text-[#C9A84C]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <span class="text-sm font-light text-[#F5F0E8]/70">Sans publicité</span>
+              </li>
+            </ul>
+            <a
+              href="#"
+              class="block w-full text-center rounded-full bg-[#C9A84C] hover:bg-[#E2C97E] text-[#1A1A1A] font-medium py-3.5 transition-colors"
+            >
+              Essayer Premium
+            </a>
+          </div>
+        </div>
+
+        <p class="text-xs text-[#6B7280] mt-8 italic font-light">
+          * Les tarifs sont des exemples et peuvent évoluer avant le lancement.
+        </p>
+      </section>
+
+      <!-- CTA section -->
+      <section class="relative bg-[#1C3A2F] text-center overflow-hidden">
+        <div
+          class="absolute w-[500px] h-[500px] rounded-full border border-[#F5F0E8]/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        ></div>
+        <div
+          class="absolute w-[300px] h-[300px] rounded-full border border-[#C9A84C]/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        ></div>
+
+        <div class="relative z-10 max-w-[1440px] mx-auto px-[5%] py-28">
+          <h2
+            class="font-playfair text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.2] tracking-[-0.02em] text-[#F5F0E8] mb-4"
+          >
+            Prêt à reprendre le
+            <br />
+            <em class="italic text-[#E2C97E]">contrôle de votre argent ?</em>
+          </h2>
+          <p class="text-[#F5F0E8]/60 font-light mb-10">
+            Rejoignez des milliers d'utilisateurs qui gèrent leurs finances avec sérénité.
+          </p>
+
+          <div class="flex items-center justify-center gap-4 flex-wrap">
+            <a
+              href="#"
+              class="inline-flex items-center rounded-full bg-[#C9A84C] hover:bg-[#E2C97E] text-[#1A1A1A] font-medium px-8 py-4 text-base shadow-[0_4px_20px_rgba(201,168,76,0.3)] hover:-translate-y-0.5 transition-all"
+            >
+              Créer mon compte gratuit
+            </a>
+            <a
+              href="#"
+              class="inline-flex items-center rounded-full border border-[#F5F0E8]/15 text-[#F5F0E8]/70 hover:border-[#F5F0E8]/40 hover:text-[#F5F0E8] px-8 py-4 text-base transition-colors"
+            >
+              J'ai déjà un compte
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-[#1A1A1A]">
+        <div
+          class="max-w-[1440px] mx-auto px-[5%] pt-12 pb-8 flex flex-col sm:flex-row items-center justify-between gap-6 flex-wrap"
+        >
+          <p class="font-playfair text-lg font-bold text-[#F5F0E8]">
+            budget<span class="text-[#C9A84C]">.</span>management
+          </p>
+
+          <p class="text-xs text-[#F5F0E8]/30 font-light" id="footerYear">
+            © 2026 Budget Management. Tous droits réservés.
+          </p>
+
+          <nav class="flex gap-6">
+            <a href="#" class="text-xs text-[#F5F0E8]/40 hover:text-[#F5F0E8]/80 transition-colors"
+              >Confidentialité</a
+            >
+            <a href="#" class="text-xs text-[#F5F0E8]/40 hover:text-[#F5F0E8]/80 transition-colors"
+              >CGU</a
+            >
+            <a href="#" class="text-xs text-[#F5F0E8]/40 hover:text-[#F5F0E8]/80 transition-colors"
+              >Contact</a
+            >
+          </nav>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      // Navbar: pleine largeur transparente en haut -> pilule flottante opaque au scroll
+      const navbarWrapper = document.getElementById("navbarWrapper");
+      const navbar = document.getElementById("navbar");
+
+      function updateNavbar() {
+        const isScrolled = window.scrollY > 20;
+        navbarWrapper.classList.toggle("is-scrolled", isScrolled);
+        navbar.classList.toggle("is-scrolled", isScrolled);
+      }
+      updateNavbar();
+      window.addEventListener("scroll", updateNavbar);
+
+      // Mobile menu toggle
+      const menuBtn = document.getElementById("menuBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const iconMenu = document.getElementById("iconMenu");
+      const iconClose = document.getElementById("iconClose");
+      menuBtn.addEventListener("click", () => {
+        const isOpen = !mobileMenu.classList.contains("hidden");
+        mobileMenu.classList.toggle("hidden");
+        iconMenu.classList.toggle("hidden", !isOpen);
+        iconClose.classList.toggle("hidden", isOpen);
+      });
+      mobileMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          iconMenu.classList.remove("hidden");
+          iconClose.classList.add("hidden");
+        });
+      });
+
+      document.getElementById("footerYear").textContent =
+        "© " + new Date().getFullYear() + " Budget Management. Tous droits réservés.";
+    </script>
+  </body>
+</html>
